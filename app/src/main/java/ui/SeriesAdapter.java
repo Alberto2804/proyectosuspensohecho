@@ -7,32 +7,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.proyectoenero.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import data.Serie;
+import room.MediaEntity;
+import room.MediaEntity;
+import room.LocalViewModel;
 import viewmodel.TmdbViewModel;
 
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewHolder> {
 
-    List<Serie> seriesList;
-    TmdbViewModel viewModel;
-
+    private List<Serie> seriesList;
+    private TmdbViewModel tmdbViewModel;
+    private LocalViewModel localViewModel;
     private final LayoutInflater inflater;
+    private final Context context;
 
-    public SeriesAdapter(Context context, ViewModel viewModel) {
-        this.viewModel = (TmdbViewModel) viewModel;
+    public SeriesAdapter(Context context, TmdbViewModel tmdbViewModel, LocalViewModel localViewModel) {
+        this.context = context;
+        this.tmdbViewModel = tmdbViewModel;
+        this.localViewModel = localViewModel;
         this.inflater = LayoutInflater.from(context);
         this.seriesList = new ArrayList<>();
     }
@@ -51,23 +56,35 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
         holder.tvTitulo.setText(serie.getName());
         holder.tvDescripcion.setText(serie.getOverview());
         holder.tvSubtitulo.setText("Serie de TV");
-
         holder.icMedia.setImageResource(android.R.drawable.ic_menu_agenda);
 
-        Glide.with(holder.itemView.getContext())
+        Glide.with(context)
                 .load("https://image.tmdb.org/t/p/w500" + serie.getPosterPath())
-                .transform(new CenterCrop())
                 .into(holder.imgPoster);
 
         holder.itemView.setOnClickListener(v -> {
-            viewModel.seleccionarSerie(serie.getId());
+            tmdbViewModel.seleccionarSerie(serie.getId());
 
             Bundle bundle = new Bundle();
             bundle.putInt("id", serie.getId());
-            bundle.putBoolean("esPelicula", false); // Es serie
+            bundle.putBoolean("esPelicula", false);
 
             NavController navController = Navigation.findNavController(v);
             navController.navigate(R.id.detalleFragment, bundle);
+        });
+
+        holder.btnAgregarPendiente.setOnClickListener(v -> {
+            MediaEntity media = new MediaEntity();
+            media.setTmdbId(serie.getId());
+            media.setTitulo(serie.getName());
+            media.setDescripcion(serie.getOverview());
+            media.setPosterPath(serie.getPosterPath());
+            media.setTipo("SERIE");
+            media.setEsPendiente(true);
+
+            localViewModel.insertarMedia(media);
+
+            Toast.makeText(context, "Serie añadida a pendientes", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -76,26 +93,27 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
         return seriesList != null ? seriesList.size() : 0;
     }
 
-    public void setSeriesList(List<Serie> seriesList) {
-        this.seriesList = seriesList;
+    public void setSeriesList(List<Serie> list) {
+        this.seriesList = list;
         notifyDataSetChanged();
     }
 
-    public void addSeriesList(List<Serie> nuevas) {
-        int inicio = seriesList.size();
-        this.seriesList.addAll(nuevas);
-        notifyItemRangeInserted(inicio, nuevas.size());
+    public void addSeriesList(List<Serie> list) {
+        int start = seriesList.size();
+        this.seriesList.addAll(list);
+        notifyItemRangeInserted(start, list.size());
     }
 
     public class SerieViewHolder extends RecyclerView.ViewHolder {
 
-        final ImageView imgPoster, icMedia;
+        final ImageView imgPoster, icMedia, btnAgregarPendiente;
         final TextView tvTitulo, tvSubtitulo, tvDescripcion;
 
         public SerieViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPoster = itemView.findViewById(R.id.imgPoster);
             icMedia = itemView.findViewById(R.id.icMedia);
+            btnAgregarPendiente = itemView.findViewById(R.id.btnAgregarPendiente);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvSubtitulo = itemView.findViewById(R.id.tvSubtitulo);
             tvDescripcion = itemView.findViewById(R.id.tvDescripcion);

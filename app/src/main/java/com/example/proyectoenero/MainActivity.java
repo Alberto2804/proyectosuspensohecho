@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Vinculamos la Toolbar con el NavController
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
     }
 

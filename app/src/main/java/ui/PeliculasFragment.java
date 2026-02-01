@@ -12,14 +12,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.proyectoenero.databinding.FragmentPeliculasBinding; // Ajusta el paquete si es necesario
+import com.example.proyectoenero.databinding.FragmentPeliculasBinding;
 
+import room.LocalViewModel;
 import viewmodel.TmdbViewModel;
 
 public class PeliculasFragment extends Fragment {
 
     private FragmentPeliculasBinding binding;
     private TmdbViewModel viewModel;
+    private LocalViewModel localViewModel;
     private PeliculasAdapter adapter;
 
     @Override
@@ -34,6 +36,7 @@ public class PeliculasFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(TmdbViewModel.class);
+        localViewModel = new ViewModelProvider(requireActivity()).get(LocalViewModel.class);
 
         configurarRecyclerView();
 
@@ -47,7 +50,9 @@ public class PeliculasFragment extends Fragment {
     }
 
     private void configurarRecyclerView() {
-        adapter = new PeliculasAdapter(requireContext(), viewModel);
+        // 2. Pasamos el localViewModel al Adapter para que funcione el botón (+)
+        adapter = new PeliculasAdapter(requireContext(), viewModel, localViewModel);
+
         binding.rvPeliculas.setAdapter(adapter);
         binding.rvPeliculas.setLayoutManager(new LinearLayoutManager(getContext()));
     }

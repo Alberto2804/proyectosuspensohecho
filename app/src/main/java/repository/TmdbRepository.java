@@ -183,4 +183,39 @@ public class TmdbRepository {
             }
         });
     }
+
+    public void searchPeliculas(String query, PeliculasCallback callback) {
+        api.searchPeliculas(query).enqueue(new Callback<PeliculaResponse>() {
+            @Override
+            public void onResponse(Call<PeliculaResponse> call, Response<PeliculaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResult(Resource.success(response.body().getResults()));
+                } else {
+                    callback.onResult(Resource.error("Error buscando películas"));
+                }
+            }
+            @Override
+            public void onFailure(Call<PeliculaResponse> call, Throwable t) {
+                callback.onResult(Resource.error(t.getMessage()));
+            }
+        });
+    }
+
+    public void searchSeries(String query, SeriesCallback callback) {
+        api.searchSeries(query).enqueue(new Callback<SerieResponse>() {
+            @Override
+            public void onResponse(Call<SerieResponse> call, Response<SerieResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResult(Resource.success(response.body().getResults()));
+                } else {
+                    callback.onResult(Resource.error("Error buscando series"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SerieResponse> call, Throwable t) {
+                callback.onResult(Resource.error(t.getMessage()));
+            }
+        });
+    }
 }

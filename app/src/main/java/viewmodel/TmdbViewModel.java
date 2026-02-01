@@ -26,6 +26,9 @@ public class TmdbViewModel extends ViewModel {
     private final List<Pelicula> peliculasAcumuladas = new ArrayList<>();
     private final List<Serie> seriesAcumuladas = new ArrayList<>();
 
+    public MutableLiveData<Resource<List<Pelicula>>> resultadosBusquedaPeliculas = new MutableLiveData<>();
+    public MutableLiveData<Resource<List<Serie>>> resultadosBusquedaSeries = new MutableLiveData<>();
+
     private boolean isLoadingPeliculas = false;
     private boolean isLoadingSeries = false;
 
@@ -36,7 +39,6 @@ public class TmdbViewModel extends ViewModel {
 
 
     public void seleccionarPelicula(int id) {
-        // 1. Pedimos el detalle
         repository.getDetallePelicula(id, result -> {
             peliculaSeleccionada.postValue(result);
         });
@@ -102,5 +104,13 @@ public class TmdbViewModel extends ViewModel {
                     isLoadingSeries = false;
             }
         });
+    }
+
+    public void buscarPeliculas(String query) {
+        repository.searchPeliculas(query, result -> resultadosBusquedaPeliculas.postValue(result));
+    }
+
+    public void buscarSeries(String query) {
+        repository.searchSeries(query, result -> resultadosBusquedaSeries.postValue(result));
     }
 }

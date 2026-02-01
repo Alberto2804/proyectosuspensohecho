@@ -12,14 +12,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.proyectoenero.databinding.FragmentSerieBinding; // Ajusta el paquete
+import com.example.proyectoenero.databinding.FragmentSerieBinding;
 
+import room.LocalViewModel;
 import viewmodel.TmdbViewModel;
 
 public class SerieFragment extends Fragment {
 
     private FragmentSerieBinding binding;
     private TmdbViewModel viewModel;
+    private LocalViewModel localViewModel;
     private SeriesAdapter adapter;
 
     @Override
@@ -34,6 +36,7 @@ public class SerieFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(TmdbViewModel.class);
+        localViewModel = new ViewModelProvider(requireActivity()).get(LocalViewModel.class);
 
         configurarRecyclerView();
         observarSeries();
@@ -45,7 +48,8 @@ public class SerieFragment extends Fragment {
     }
 
     private void configurarRecyclerView() {
-        adapter = new SeriesAdapter(requireContext(), viewModel);
+        adapter = new SeriesAdapter(requireContext(), viewModel, localViewModel);
+
         binding.recyclerSeries.setAdapter(adapter);
         binding.recyclerSeries.setLayoutManager(new LinearLayoutManager(getContext()));
     }

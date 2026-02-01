@@ -27,6 +27,20 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
+            android:id="@+id/btnAgregarPendiente"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="12dp"
+            android:background="#80000000"
+            android:src="@android:drawable/ic_input_add"
+            app:tint="@android:color/white"
+            android:padding="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
             android:id="@+id/icMedia"
             android:layout_width="24dp"
             android:layout_height="24dp"

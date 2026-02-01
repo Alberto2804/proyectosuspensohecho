@@ -33,4 +33,36 @@
             android:id="@+id/action_serieFragment2_to_detalleFragment"
             app:destination="@id/detalleFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/pendientesFragment"
+        android:name="com.example.proyectoenero.PendientesFragment"
+        android:label="Pendientes"
+        tools:layout="@layout/fragment_pendientes" >
+        <action
+            android:id="@+id/action_pendientesFragment_to_detalleFragment"
+            app:destination="@id/detalleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/seguimientoFragment"
+        android:name="com.example.proyectoenero.SeguimientoFragment"
+        android:label="Seguimiento"
+        tools:layout="@layout/fragment_seguimiento" >
+        <action
+            android:id="@+id/action_seguimientoFragment_to_detalleSeguimientoFragment"
+            app:destination="@id/detalleSeguimientoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/anadirSeguimientoFragment"
+        android:name="com.example.proyectoenero.AnadirSeguimientoFragment"
+        android:label="Añadir Seguimiento"
+        tools:layout="@layout/fragment_anadir_seguimiento" />
+
+    <action
+        android:id="@+id/action_global_anadirSeguimiento"
+        app:destination="@id/anadirSeguimientoFragment" />
+    <fragment
+        android:id="@+id/detalleSeguimientoFragment"
+        android:name="com.example.proyectoenero.DetalleSeguimientoFragment"
+        android:label="fragment_detalle_seguimiento"
+        tools:layout="@layout/fragment_detalle_seguimiento" />
 </navigation>

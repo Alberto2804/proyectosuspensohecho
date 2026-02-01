@@ -7,32 +7,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.proyectoenero.R;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import data.Pelicula;
+import room.MediaEntity;
+import room.LocalViewModel;
 import viewmodel.TmdbViewModel;
 
 public class PeliculasAdapter extends RecyclerView.Adapter<PeliculasAdapter.PeliculaViewHolder> {
 
-    List<Pelicula> peliculasList;
-    TmdbViewModel viewModel;
-
+    private List<Pelicula> peliculasList;
+    private TmdbViewModel tmdbViewModel;
+    private LocalViewModel localViewModel;
     private final LayoutInflater inflater;
+    private final Context context;
 
-    public PeliculasAdapter(Context context, ViewModel viewModel) {
-        this.viewModel = (TmdbViewModel) viewModel;
+    public PeliculasAdapter(Context context, TmdbViewModel tmdbViewModel, LocalViewModel localViewModel) {
+        this.context = context;
+        this.tmdbViewModel = tmdbViewModel;
+        this.localViewModel = localViewModel;
         this.inflater = LayoutInflater.from(context);
         this.peliculasList = new ArrayList<>();
     }
@@ -49,54 +49,60 @@ public class PeliculasAdapter extends RecyclerView.Adapter<PeliculasAdapter.Peli
         Pelicula pelicula = peliculasList.get(position);
 
         holder.tvTitulo.setText(pelicula.getTitle());
-        holder.tvDescripcion.setText(pelicula.getOverview());
         holder.tvSubtitulo.setText("Película • Popular");
+        holder.tvDescripcion.setText(pelicula.getOverview());
 
-        holder.icMedia.setImageResource(android.R.drawable.ic_menu_slideshow);
-
-        Glide.with(holder.itemView.getContext())
+        Glide.with(context)
                 .load("https://image.tmdb.org/t/p/w500" + pelicula.getPosterPath())
-                .transform(new CenterCrop())
                 .into(holder.imgPoster);
 
         holder.itemView.setOnClickListener(v -> {
-            viewModel.seleccionarPelicula(pelicula.getId());
-
+            tmdbViewModel.seleccionarPelicula(pelicula.getId());
             Bundle bundle = new Bundle();
             bundle.putInt("id", pelicula.getId());
             bundle.putBoolean("esPelicula", true);
+            Navigation.findNavController(v).navigate(R.id.detalleFragment, bundle);
+        });
 
-            NavController navController = Navigation.findNavController(v);
-            navController.navigate(R.id.detalleFragment, bundle);
+        holder.btnAgregarPendiente.setOnClickListener(v -> {
+            MediaEntity media = new MediaEntity();
+            media.setTmdbId(pelicula.getId());
+            media.setTitulo(pelicula.getTitle());
+            media.setDescripcion(pelicula.getOverview());
+            media.setPosterPath(pelicula.getPosterPath());
+            media.setTipo("PELICULA");
+            media.setEsPendiente(true);
 
+            media.setEsPendiente(true);
+            media.setEsSeguimiento(false);
+
+            localViewModel.insertarMedia(media);
+            Toast.makeText(context, "Añadido a pendientes", Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
-    public int getItemCount() {
-        return peliculasList != null ? peliculasList.size() : 0;
-    }
+    public int getItemCount() { return peliculasList != null ? peliculasList.size() : 0; }
 
-    public void setPeliculasList(List<Pelicula> peliculasList) {
-        this.peliculasList = peliculasList;
+    public void setPeliculasList(List<Pelicula> list) {
+        this.peliculasList = list;
         notifyDataSetChanged();
     }
 
-    public void addPeliculasList(List<Pelicula> nuevas) {
-        int inicio = peliculasList.size();
-        this.peliculasList.addAll(nuevas);
-        notifyItemRangeInserted(inicio, nuevas.size());
+    public void addPeliculasList(List<Pelicula> list) {
+        int start = peliculasList.size();
+        this.peliculasList.addAll(list);
+        notifyItemRangeInserted(start, list.size());
     }
 
-    public class PeliculaViewHolder extends RecyclerView.ViewHolder {
-
-        final ImageView imgPoster, icMedia;
-        final TextView tvTitulo, tvSubtitulo, tvDescripcion;
+    class PeliculaViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgPoster, btnAgregarPendiente;
+        TextView tvTitulo, tvSubtitulo, tvDescripcion;
 
         public PeliculaViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPoster = itemView.findViewById(R.id.imgPoster);
-            icMedia = itemView.findViewById(R.id.icMedia);
+            btnAgregarPendiente = itemView.findViewById(R.id.btnAgregarPendiente);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvSubtitulo = itemView.findViewById(R.id.tvSubtitulo);
             tvDescripcion = itemView.findViewById(R.id.tvDescripcion);

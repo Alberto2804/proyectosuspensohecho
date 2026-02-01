@@ -131,7 +131,6 @@ public class DetalleFragment extends Fragment {
                         return;
                     }
                 }
-                // Si no encontramos ninguno
                 binding.btnVerTrailer.setEnabled(false);
                 binding.btnVerTrailer.setText("NO DISPONIBLE");
             }
