@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/inicioFragment">
+
+    <fragment
+        android:id="@+id/peliculasFragment"
+        android:name="ui.PeliculasFragment"
+        android:label="fragment_peliculas"
+        tools:layout="@layout/fragment_peliculas" >
+        <action
+            android:id="@+id/action_peliculasFragment_to_detalleFragment"
+            app:destination="@id/detalleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detalleFragment"
+        android:name="ui.DetalleFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_detalle" />
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.example.proyectoenero.InicioFragment"
+        android:label="Explorar"
+        tools:layout="@layout/fragment_inicio" />
+    <fragment
+        android:id="@+id/serieFragment2"
+        android:name="ui.SerieFragment"
+        android:label="fragment_serie"
+        tools:layout="@layout/fragment_serie" >
+        <action
+            android:id="@+id/action_serieFragment2_to_detalleFragment"
+            app:destination="@id/detalleFragment" />
+    </fragment>
+</navigation>
