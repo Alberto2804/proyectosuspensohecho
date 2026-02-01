@@ -40,5 +40,10 @@ public class LocalViewModel extends AndroidViewModel {
 
 
     public void insertarMedia(MediaEntity media) {
+        repository.insertar(media);
+    }
+
+    public void insertarPendienteUnico(MediaEntity media, LocalRepository.InsertCallback callback) {
+        repository.insertarPendienteSiNoExiste(media, callback);
     }
 }

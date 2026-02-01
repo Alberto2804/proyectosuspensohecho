@@ -82,9 +82,15 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
             media.setTipo("SERIE");
             media.setEsPendiente(true);
 
-            localViewModel.insertarMedia(media);
-
-            Toast.makeText(context, "Serie añadida a pendientes", Toast.LENGTH_SHORT).show();
+            localViewModel.insertarPendienteUnico(media, exito -> {
+                v.post(() -> {
+                    if (exito) {
+                        Toast.makeText(context, "Añadido a pendientes", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "¡Ya está en tu lista!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
         });
     }
 

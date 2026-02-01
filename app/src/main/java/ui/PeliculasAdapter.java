@@ -76,8 +76,15 @@ public class PeliculasAdapter extends RecyclerView.Adapter<PeliculasAdapter.Peli
             media.setEsPendiente(true);
             media.setEsSeguimiento(false);
 
-            localViewModel.insertarMedia(media);
-            Toast.makeText(context, "Añadido a pendientes", Toast.LENGTH_SHORT).show();
+            localViewModel.insertarPendienteUnico(media, exito -> {
+                v.post(() -> {
+                    if (exito) {
+                        Toast.makeText(context, "Añadido a pendientes", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "¡Ya está en tu lista!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
         });
     }
 

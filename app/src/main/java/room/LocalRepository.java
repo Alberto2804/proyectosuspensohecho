@@ -34,6 +34,19 @@ public class LocalRepository {
         });
     }
 
+    public void insertarPendienteSiNoExiste(MediaEntity media, InsertCallback callback) {
+        executor.execute(() -> {
+
+            int count = mediaDao.contarPendientes(media.getTmdbId());
+            if (count > 0) {
+                callback.onResult(false);
+            } else {
+                mediaDao.insertar(media);
+                callback.onResult(true);
+            }
+        });
+    }
+
 
     public void eliminar(MediaEntity media) {
         executor.execute(() -> mediaDao.eliminar(media));

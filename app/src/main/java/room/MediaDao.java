@@ -36,4 +36,7 @@ public interface MediaDao {
 
     @Query("SELECT COUNT(*) FROM media_local WHERE tmdbId = :tmdbId AND esSeguimiento = 1")
     int contarSeguimientos(int tmdbId);
+
+    @Query("SELECT COUNT(*) FROM media_local WHERE tmdbId = :tmdbId AND esPendiente = 1")
+    int contarPendientes(int tmdbId);
 }
