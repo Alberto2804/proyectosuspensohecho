@@ -63,6 +63,11 @@
     <fragment
         android:id="@+id/detalleSeguimientoFragment"
         android:name="com.example.proyectoenero.DetalleSeguimientoFragment"
-        android:label="fragment_detalle_seguimiento"
+        android:label="Detalle Seguimiento"
         tools:layout="@layout/fragment_detalle_seguimiento" />
+    <fragment
+        android:id="@+id/ajustesFragment"
+        android:name="com.example.proyectoenero.AjustesFragment"
+        android:label="fragment_ajustes"
+        tools:layout="@layout/fragment_ajustes" />
 </navigation>
